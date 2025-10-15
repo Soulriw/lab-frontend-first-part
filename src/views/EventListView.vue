@@ -4,6 +4,7 @@ import { type Event } from '@/types'
 import { ref, onMounted, computed, watchEffect } from 'vue'
 import EventService from '@/services/EventService'
 import { useRouter } from 'vue-router'
+import BaseInput from '@/components/BaseInput.vue'
 
 const router = useRouter()
 const events = ref<Event[] | null>(null)
@@ -31,12 +32,37 @@ onMounted(() => {
       })
   })
 })
+
+const keyword = ref('')
+
+function updateKeyword(value: string) {
+  let queryFunction;
+  if (value.trim() === '') {
+    queryFunction = EventService.getEvents(3, page.value)
+  } else {
+    queryFunction = EventService.getEventsByKeyword(value, 3, page.value)
+  }
+  queryFunction.then(response => {
+    events.value = response.data
+    totalEvents.value = response.headers['x-total-count']
+  }).catch(() => {
+    router.push({ name: 'NetworkError' })
+  })
+}
+
 </script>
 
 <template>
   <h1>Events For Good</h1>
   <!-- new element -->
   <div class="flex flex-col items-center">
+    <div class="w-64">
+      <BaseInput
+        v-model="keyword"
+        label="Search...."
+        @input="updateKeyword($event.target.value)"
+        class="w-full"/>
+    </div>
     <EventCard v-for="event in events" :key="event.id" :event="event" />
     <div class="pagination">
       <RouterLink
