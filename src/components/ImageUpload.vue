@@ -32,8 +32,11 @@ const media = ref(convertStringToMedia(props.modelValue))
 const uploadUrl = ref(import.meta.env.VITE_UPLOAD_URL)
 
 const onChanged = (files: any) => {
-  emit('update:modelValue', convertMediaToString(files))
+  const urls = files.map((f: any) => f.response?.name || f.name)
+  emit('update:modelValue', urls)
 }
+
+
 </script>
 
 <template>
