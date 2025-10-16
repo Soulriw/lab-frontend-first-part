@@ -1,49 +1,64 @@
 <script setup lang="ts">
-import type { Organizer } from '@/types'
 import { ref } from 'vue'
-import OrganizerService from '@/services/OrganizerService'
 import { useRouter } from 'vue-router'
+import OrganizerService from '@/services/OrganizerService'
 import { useMessageStore } from '@/stores/message'
+import ImageUpload from '@/components/ImageUpload.vue' // ✅ add image upload
+import type { Organizer } from '@/types'
 
-const organization = ref<any>({
-    organizationName: '',
-    address: ''
+const organization = ref<Organizer>({
+  name: '',
+  images: []
 })
 
 const router = useRouter()
 const store = useMessageStore()
+
 function saveOrganization() {
-    OrganizerService.createOrganizer(organization.value)
-        .then((response) => {
-            router.push({ name: 'organizer-detail-view', params: { id: response.data.id }})
-            store.updateMessage('You have successfully added a new organization: ' + response.data.organizationName)
-                setTimeout(() => {
-                    store.resetMessage()
-                }, 3000)
-        })
-        .catch(() => {
-            router.push({ name: 'network-error-view' })
-        })
+  OrganizerService.createOrganizer(organization.value)
+    .then((response) => {
+      router.push({ name: 'organizer-detail-view', params: { id: response.data.id } })
+      store.updateMessage('You have successfully added a new organization: ' + response.data.name)
+      setTimeout(() => {
+        store.resetMessage()
+      }, 3000)
+    })
+    .catch(() => {
+      router.push({ name: 'network-error-view' })
+    })
 }
 </script>
 
 <template>
-    <div>
-        <h1>Create an Organization</h1>
-        <form @submit.prevent="saveOrganization">
-            <h3>Organization Details</h3>
-            <label>Organization Name</label>
-            <input v-model="organization.organizationName" type="text" placeholder="Organization Name" class="field" required />
-            
-            <label>Address</label>
-            <input v-model="organization.address" type="text" placeholder="Full Address" class="field" required />
-            
-            <button class="button -fill-gradient" type="submit">Create Organization</button>
-        </form>
+  <div>
+    <h1>Create an Organization</h1>
 
-        <pre>{{ organization }}</pre>
-    </div>
+    <form @submit.prevent="saveOrganization">
+      <h3>Organization Details</h3>
+
+      <label>Organization Name</label>
+      <input
+        v-model="organization.name"
+        type="text"
+        placeholder="Organization Name"
+        class="field"
+        required
+      />
+
+      <h3>Upload Organization Images</h3>
+      <ImageUpload v-model="organization.images" label="Organization Logo / Photos" />
+
+      <button class="button -fill-gradient" type="submit">Create Organization</button>
+    </form>
+
+    <pre>{{ organization }}</pre>
+  </div>
 </template>
+
+<style>
+/* keep your current styling (no change needed) */
+</style>
+
 
 <style>
 b,
