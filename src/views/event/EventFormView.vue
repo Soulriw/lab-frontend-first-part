@@ -7,6 +7,7 @@ import BaseInput from '@/components/BaseInput.vue'
 import type { Event, Organizer } from '@/types'
 import OrganizerService from '@/services/OrganizerService'
 import BaseSelect from '@/components/BaseSelect.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
 
 const event = ref<any>({
     category: '',
@@ -19,7 +20,8 @@ const event = ref<any>({
     organizer: {
         id: 0,
         name: ''
-    }
+    },
+    images: []
 })
 
 const router = useRouter()
@@ -63,6 +65,8 @@ onMounted(() => {
             <h3>who is your organizer?</h3>
             <label>Select an Organizer</label>
             <BaseSelect v-model="event.organizer.id" :options="organizers" label="Organizer"/>
+            <h3>The image of the Event</h3>
+            <ImageUpload v-model="event.images" />
             <button class="button" type="submit">Submit</button>
         </form>
 

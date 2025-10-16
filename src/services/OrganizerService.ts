@@ -12,14 +12,14 @@ const apiClient = axios.create({
 export default {
   getOrganizers() {
     return apiClient.get('/organizers')
-  }
+  },
   // getOrganizers(perPage: number, page: number) {
   //   return apiClient.get('/organizers?_limit=' + perPage + '&_page=' + page)
   // },
-  // getOrganizer(id: number) {
-  //   return apiClient.get('/organizers/' + id)
-  // },
-  // createOrganizer(organizer: any) {
-  //   return apiClient.post('/organizers', organizer)
-  // }
+  getOrganizer(id: number) {
+    return apiClient.get('/organizers/' + id)
+  },
+  createOrganizer(organizer: any) {
+    return apiClient.post('/organizers', organizer)
+  }
 }
